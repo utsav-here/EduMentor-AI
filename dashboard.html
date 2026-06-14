@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EduMentor Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+
+    <div class="dashboard-header">
+
+        <h1>📚 EduMentor Dashboard</h1>
+
+        <p>
+            Your personalized learning journey
+        </p>
+
+    </div>
+
+    <!-- WELCOME -->
+
+    <div class="welcome-card">
+
+        <h2>
+            Welcome back, {{ name }} 👋
+        </h2>
+
+        <p>
+
+            Here's a snapshot of your current learning progress
+            and a study plan tailored to your needs.
+
+        </p>
+
+    </div>
+
+    <!-- OVERVIEW CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Performance Level</h3>
+
+            <h2>{{ performance }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Daily Productivity</h3>
+
+            <h2>{{ rating }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Achievement Badge</h3>
+
+            <h2>{{ badge }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Study Consistency</h3>
+
+            <h2>{{ streak }}</h2>
+
+        </div>
+
+    </div>
+
+    <!-- SECOND ROW -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Goal</h3>
+
+            <h2>{{ goal }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Strongest Subject</h3>
+
+            <h2>{{ strong_subject }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Burnout Risk</h3>
+
+            <h2>{{ burnout }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Daily Score</h3>
+
+            <h2>{{ daily_score }}</h2>
+
+        </div>
+
+    </div>
+
+    <!-- EXAM READINESS -->
+
+    <div class="section">
+
+        <h2>🎯 Exam Readiness</h2>
+
+        <div class="progress">
+
+            <div class="progress-bar"
+                 style="width:{{ readiness }}%;">
+
+                {{ readiness }}%
+
+            </div>
+
+        </div>
+
+        <p>
+
+            This score is calculated from your overall
+            academic performance across all subjects.
+
+        </p>
+
+    </div>
+
+    <!-- SUBJECT PERFORMANCE -->
+
+    <div class="section">
+
+        <h2>📖 Subject Performance</h2>
+
+        <label>Mathematics</label>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:{{ math }}%">
+                 {{ math }}%
+            </div>
+        </div>
+
+        <label>Physics</label>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:{{ physics }}%">
+                 {{ physics }}%
+            </div>
+        </div>
+
+        <label>Chemistry</label>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:{{ chemistry }}%">
+                 {{ chemistry }}%
+            </div>
+        </div>
+
+        <label>English</label>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:{{ english }}%">
+                 {{ english }}%
+            </div>
+        </div>
+
+        <label>Computer Science</label>
+
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:{{ cs }}%">
+                 {{ cs }}%
+            </div>
+        </div>
+
+    </div>
+
+    <!-- WEAK SUBJECTS -->
+
+    <div class="section">
+
+        <h2>⚠ Subjects Requiring More Attention</h2>
+
+        <ul>
+
+            {% for subject in weak_subjects %}
+
+            <li>{{ subject }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+
+    <div class="mentor-card">
+
+        <h2>📚 Study Recommendations</h2>
+
+        <ul>
+
+            {% for item in report %}
+
+            <li>{{ item }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <!-- DAILY TRACKER -->
+
+    <div class="section">
+
+        <h2>⏱ Today's Activity Summary</h2>
+
+        <table>
+
+            <tr>
+                <th>Activity</th>
+                <th>Value</th>
+            </tr>
+
+            <tr>
+                <td>Study Hours</td>
+                <td>{{ daily_study }}</td>
+            </tr>
+
+            <tr>
+                <td>Questions Solved</td>
+                <td>{{ questions }}</td>
+            </tr>
+
+            <tr>
+                <td>Mock Test Score</td>
+                <td>{{ mock_score }}</td>
+            </tr>
+
+            <tr>
+                <td>Sleep Hours</td>
+                <td>{{ daily_sleep }}</td>
+            </tr>
+
+            <tr>
+                <td>Mood</td>
+                <td>{{ mood }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+    <!-- STUDY GRAPH -->
+
+    <div class="section">
+
+        <h2>📈 Weekly Study Progress</h2>
+
+        <canvas id="studyChart"></canvas>
+
+    </div>
+
+    <!-- WEEKLY PLAN -->
+
+    <div class="section">
+
+        <h2>📅 Weekly Study Planner</h2>
+
+        <table>
+
+            <tr>
+                <th>Day</th>
+                <th>Focus Area</th>
+            </tr>
+
+            {% for day, task in weekly_plan.items() %}
+
+            <tr>
+
+                <td>{{ day }}</td>
+
+                <td>{{ task }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- DAILY TIMETABLE -->
+
+    <div class="section">
+
+        <h2>🕒 Recommended Daily Timetable</h2>
+
+        <table>
+
+            {% for item in daily_plan %}
+
+            <tr>
+
+                <td>{{ item }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- STUDY METHODS -->
+
+    <div class="section">
+
+        <h2>🧠 Effective Study Techniques</h2>
+
+        <ul>
+
+            <li>Pomodoro Technique (25 mins study + 5 mins break)</li>
+
+            <li>Active Recall Learning</li>
+
+            <li>Spaced Repetition Revision</li>
+
+            <li>Mind Mapping</li>
+
+            <li>Feynman Technique</li>
+
+            <li>Mock Tests Every Week</li>
+
+            <li>Error Analysis After Every Test</li>
+
+            <li>Flashcards for Quick Revision</li>
+
+        </ul>
+
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+
+    <div class="section">
+
+        <h2>🏆 Learning Achievements</h2>
+
+        <div class="badges">
+
+            <div class="badge">
+                🔥 Consistency Builder
+            </div>
+
+            <div class="badge">
+                📚 Revision Champion
+            </div>
+
+            <div class="badge">
+                🎯 Goal Achiever
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MOTIVATION -->
+
+    <div class="section">
+
+        <h2>💡 Today's Motivation</h2>
+
+        <p>
+
+            Success is not about studying longer.
+            It is about studying smarter and staying
+            consistent every day.
+
+        </p>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        <p>
+
+            EduMentor • Adaptive Study Planner
+
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+const ctx = document.getElementById('studyChart');
+
+new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: [
+
+            'Mon',
+            'Tue',
+            'Wed',
+            'Thu',
+            'Fri',
+            'Sat',
+            'Sun'
+
+        ],
+
+        datasets: [{
+
+            label: 'Study Hours',
+
+            data: [
+
+                4,
+                5,
+                3,
+                6,
+                5,
+                7,
+                4
+
+            ],
+
+            borderWidth: 3,
+
+            tension: 0.4,
+
+            fill: true
+
+        }]
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
